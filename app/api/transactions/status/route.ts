@@ -1,40 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../database";
+import { GetRequests } from "@/app/services/relay";
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await req.json();
-    
+    const { transactionId } = await req.json();
 
-    const transactions = await prisma.transaction.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' }
-    });
+    const requests: any = await GetRequests();
 
-    // console.log(transactions);
-    // Convert BigInt fields to numbers
-    const serializedTransactions = transactions.map(transaction => ({
-      ...transaction,
-      userId:  String(transaction.userId),
-      chainId: String(transaction.chainId),
-      status: transaction.status,
-      transactionId: transaction.transactionId,
-      createdAt: transaction.createdAt.toISOString(),
-      updatedAt: transaction.updatedAt.toISOString()
-    }));
-
-    return NextResponse.json(
-      {
-        message: "Transactions fetched successfully",
-        data: serializedTransactions
-      },
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json"
-        }
+    for (const request of requests) {
+      if (request.transactionId === transactionId) {
+        const transactionStatus = request.status;
+        return NextResponse.json(
+          {
+            message: "Transaction confirmed",
+            data: transactionStatus
+          },
+          {
+            status: 200
+          }
+        );
       }
-    );
+    }
 
   } catch (error) {
     console.error("Error fetching transactions:", error);
