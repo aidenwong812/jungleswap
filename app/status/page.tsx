@@ -30,12 +30,12 @@ const Status = () => {
             .catch((err) => console.log(err));
     }
     return (
-        <div className="flex flex-col justify-center gap-4">
+        <div className="flex flex-col justify-center gap-4 px-6">
             <div className="text-white text-2xl -mt-20 font-bold">
                 Check the transaction status.
             </div>
             <div>
-                <button className="py-1 px-2 rounded-md hover:bg-[#35177a] touch-pan-left bg-[#504f4f] text-white text-sm float-end w-20 outline-none opacity-80"
+                <button className="py-1 px-2 rounded-md hover:bg-[#272729] touch-pan-left bg-[#504f4f] text-white text-sm float-end w-20 outline-none opacity-80"
                     onClick={handleReset}
                     disabled={isLoading}
                 >
@@ -47,7 +47,7 @@ const Status = () => {
             </div>
             <div className=" h-[350px] overflow-auto w-full">
                 <table className="text-white border-[0.5px] w-full">
-                    <thead className=" sticky top-[-0.5px] bg-[#59595a] opacity-80">
+                    <thead className=" sticky top-[-0.5px] bg-[#59595a]">
                         <tr className="border-[0.5px]">
                             <th className="border-r-[0.5px]">No</th>
                             <th className="border-r-[0.5px]">TransactionId</th>
@@ -60,7 +60,7 @@ const Status = () => {
                             transactions.map((transaction, index) => (
                                 <tr key={index} className="h-8 text-white">
                                     <td className="border-r-[0.5px] border-t-[0.5px]">{index + 1}</td>
-                                    <td className="border-r-[0.5px] border-t-[0.5px]">{transaction.transactionId}</td>
+                                    <td className="border-r-[0.5px] border-t-[0.5px] break-all">{transaction.transactionId}</td>
                                     {/* <td className="border-r-[0.5px] border-t-[0.5px]">{transaction.chainId}</td> */}
                                     <td className="border-t-[0.5px]">{transaction.status}</td>
                                 </tr>

@@ -10,6 +10,7 @@ createClient({
 });
 
 
+
 export async function getSolverCapacity(destinationChainId: string, originChainId: string) {
 
     const data = await getClient()?.actions.getSolverCapacity({

@@ -8,10 +8,10 @@ const prisma = new PrismaClient()
 export async function POST(req: NextRequest) {
   try {
     const { transactions } = await req.json();
-    
+
     for (const transaction of transactions) {
       const transactionId = transaction.transactionId;
-      
+
       // Check if the transaction exists before updating
       const existingTransaction = await prisma.transaction.findUnique({
         where: { transactionId },
@@ -22,23 +22,35 @@ export async function POST(req: NextRequest) {
         continue;
       }
 
-      const transactionStatus = await getTransactionStatus(atob(transactionId));
-      
-      if (transactionStatus.status === 'error') {
-        console.error(`Error fetching transaction status for ${transactionId}:`, transactionStatus.status);
-        
-        // Delete the transaction if it exists
-        await prisma.transaction.delete({
-          where: { transactionId },
-        });
-      }
+      const options :any = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: { chainId: transaction.chainId, transactionId: transaction.transactionId }
+      };
+
+      fetch('https://api.relay.link/transactions/index', options)
+        .then(response => response.json())
+        .then(response => console.log(response))
+        .catch(err => console.error(err));
+
+
+      // const transactionStatus = await getTransactionStatus(atob(transactionId));
+
+      // if (transactionStatus.status === 'error') {
+      //   console.error(`Error fetching transaction status for ${transactionId}:`, transactionStatus.status);
+
+      //   // Delete the transaction if it exists
+      //   await prisma.transaction.delete({
+      //     where: { transactionId },
+      //   });
+      // }
 
       // Update only if the transaction exists
       if (existingTransaction) {
         await prisma.transaction.update({
           where: { transactionId },
           data: {
-            status: transactionStatus.status,
+            status: transaction.status,
             updatedAt: new Date()
           }
         })

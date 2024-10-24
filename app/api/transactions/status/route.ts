@@ -11,10 +11,14 @@ export async function POST(req: NextRequest) {
       orderBy: { createdAt: 'desc' }
     });
 
+    // console.log(transactions);
     // Convert BigInt fields to numbers
     const serializedTransactions = transactions.map(transaction => ({
       ...transaction,
-      userId: Number(transaction.userId),
+      userId:  String(transaction.userId),
+      chainId: String(transaction.chainId),
+      status: transaction.status,
+      transactionId: transaction.transactionId,
       createdAt: transaction.createdAt.toISOString(),
       updatedAt: transaction.updatedAt.toISOString()
     }));

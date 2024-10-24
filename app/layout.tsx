@@ -1,12 +1,17 @@
 
 import { Inter } from "next/font/google";
 import "./globals.css";
+import '@rainbow-me/rainbowkit/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from "react-toastify";
 import { Suspense } from "react";
+
 import { GlobalProvider } from "../context/GlobalContext";
 
+
 const inter = Inter({ subsets: ["latin"] });
+
+
 
 
 export default function RootLayout({

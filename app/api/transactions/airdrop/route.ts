@@ -22,16 +22,16 @@ export async function POST(req: NextRequest) {
         );
       }
   
-      const transactions = await prisma.transaction.findMany({ where: { userId: userId } });
-      for (const transaction of transactions) {
-        if (transaction.status === 'waiting') {
-          const transactionStatus = await getTransactionStatus(atob(transaction.transactionId));
-          if(transactionStatus.status === "finished")
-          checkTransactionStatus(transactionStatus, userId); // Pass the userId here
-        }
-      }
-  
+      // const transactions = await prisma.transaction.findMany({ where: { userId: userId } });
+      // for (const transaction of transactions) {
+      //   if (transaction.status === 'waiting') {
+      //     const transactionStatus = await getTransactionStatus(atob(transaction.transactionId));
+      //     if(transactionStatus.status === "finished")
+      //     checkTransactionStatus(transactionStatus, userId); // Pass the userId here
+      //   }
+      // }
       const user :any = await prisma.user.findUnique({ where: { id: userId } });
+      console.log(user);
       const airdrop = user.airdrop;
       return NextResponse.json(
         {
