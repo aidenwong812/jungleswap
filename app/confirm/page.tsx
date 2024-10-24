@@ -7,7 +7,8 @@ const Confirm = () => {
     return (
         <>
             <div className="flex flex-col gap-3 text-white text-md px-6 -mt-28">
-                <p className="text-2xl text-center py-4 text-[#ffffff]">Please send the funds you would like to exchange</p>
+                <p className="text-3xl font-bold text-center py-4 text-[#ffffff]">{transactionInfo.transactionAction}</p>
+                <p className="text-2xl text-center py-4 text-[#ffffff]">{transactionInfo.transactionDescription}</p>
                 <div className="flex gap-4">Amount
                     <p className="font-bold text-[18px]">{transactionInfo.directedAmount} {transactionInfo.fromCurrency.toUpperCase()}</p>
                 </div>

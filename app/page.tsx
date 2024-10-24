@@ -10,10 +10,9 @@ import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import InputCurrency from "./component/Input";
 import { useGlobalContext } from "../context/GlobalContext";
 import Footer from "./component/Footer";
-import { getSolverCapacity, getPrice, getQuote } from "./services/relay";
+import { getSolverCapacity, getPrice, getQuote, Getconfig, GetExecutionStatus, GetRequests, GetTokenPrice } from "./services/relay";
 import Walletbutton from "./component/Wallets";
 import { config } from './wagmi';
-
 const queryClient = new QueryClient();
 
 export default function Home() {
@@ -27,6 +26,7 @@ export default function Home() {
   const [inputCurrency, setInputCurrency] = useState<string>("APE");
   const [outCurrency, setOutCurrency] = useState<string>("SOL");
   const [inputError, setInputError] = useState<string>("");
+  const [userBalance, setUserBalance] = useState<number>(0);
   const [inputMinimumAmount, setInputminimumAmount] = useState<number>(2.5);
 
   const [id, setId] = useState<any>();
@@ -92,7 +92,8 @@ export default function Home() {
         setIsLoading(false)
         const tempOutAmount: any = await getPrice(inputChainId, outChainId, inputCurrencyId, outCurrencyId, String(inputAmount * 1e18), fromAddress, toAddress);
         toast.error(tempOutAmount.message);
-        setOutAmount(tempOutAmount);
+        setOutAmount(tempOutAmount.priceAmount);
+        setUserBalance(tempOutAmount.userBalance);
       }
     } else {
       setInputError(`Send currency amount is very small. Minimum currency amount is ${inputMinimumAmount}.`);
@@ -114,12 +115,15 @@ export default function Home() {
           fromCurrency: inputCurrency,
           toCurrency: outCurrency,
           amount: outAmount,
-          directedAmount: inputAmount
+          directedAmount: inputAmount,
+          transactionAction: quote.steps[0].action,
+          transactionDescription: quote.steps[0].description
         });
         axios.post('api/transactions/confirm', {
           userId: userId,
           transactionId: quote.steps[0].requestId,
-          chainId: quote.steps[0].items[0].data.chainId
+          chainId: quote.steps[0].items[0].data.chainId,
+          status: quote.steps[0].items[0].status
         })
         router.push('/confirm');
       }
@@ -169,8 +173,9 @@ export default function Home() {
             </div>
 
             <button
-              className="w-full rounded-full border-[1px] border-[#dde2ea] py-2 bg-radial-gradient from-transparent to-[#47434d] hover:-translate-y-1 duration-300"
-              onClick={handleTransaction}
+              className="w-full rounded-full border-[1px] border-[#dde2ea] py-2 bg-radial-gradient from-transparent to-[#47434d] hover:-translate-y-1 duration-300
+                          disabled:bg-[#413f44] disabled:text-[#5a5858]"
+              onClick={handleTransaction} disabled={userBalance>inputAmount}
             >
               Confirm
             </button>

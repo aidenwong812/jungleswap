@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client'
-import { getTransactionStatus } from '@/app/services/change-now';
-import { checkTransactionStatus } from '@/app/services/status.feature';
+import { GetRequests } from '@/app/services/relay';
 
 const prisma = new PrismaClient()
 
 export async function POST(req: NextRequest) {
   try {
     const { transactions } = await req.json();
+
+    const requests :any = await GetRequests();
+
+    console.log(requests);
 
     for (const transaction of transactions) {
       const transactionId = transaction.transactionId;
@@ -21,39 +24,22 @@ export async function POST(req: NextRequest) {
         console.warn(`No transaction found for ID: ${transactionId}`);
         continue;
       }
+      
+      for(const request of requests) {
+        console.log(request); 
+        if(request.id === transactionId) {
+          await prisma.transaction.update({
+            where: { transactionId },
+            data: {
+              status: request.status,
+              updatedAt: new Date()
+            }
+          })
+        }  else {
+          console.log(`No request found for ID: ${transactionId}`);
+        }  // End of else condition for request loop
 
-      const options :any = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: { chainId: transaction.chainId, transactionId: transaction.transactionId }
-      };
-
-      fetch('https://api.relay.link/transactions/index', options)
-        .then(response => response.json())
-        .then(response => console.log(response))
-        .catch(err => console.error(err));
-
-
-      // const transactionStatus = await getTransactionStatus(atob(transactionId));
-
-      // if (transactionStatus.status === 'error') {
-      //   console.error(`Error fetching transaction status for ${transactionId}:`, transactionStatus.status);
-
-      //   // Delete the transaction if it exists
-      //   await prisma.transaction.delete({
-      //     where: { transactionId },
-      //   });
-      // }
-
-      // Update only if the transaction exists
-      if (existingTransaction) {
-        await prisma.transaction.update({
-          where: { transactionId },
-          data: {
-            status: transaction.status,
-            updatedAt: new Date()
-          }
-        })
+        break; // Break the loop once the request is found and updated
       }
     }
 

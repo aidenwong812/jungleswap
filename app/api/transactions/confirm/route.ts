@@ -18,13 +18,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { userId, transactionId, chainId } = requestData;
+    const { userId, transactionId, chainId, status } = requestData;
     // Create the transaction
     await prisma.transaction.create({
       data: {
         userId: userId,
         transactionId: transactionId,
-        chainId: chainId
+        chainId: chainId,
+        status: status
       }
     });
 

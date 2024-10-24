@@ -8,14 +8,19 @@ interface GlobalContextType {
         fromCurrency:string,
         toCurrency:string,
         amount:number,
-        directedAmount:number };
+        directedAmount:number,
+        transactionAction:string,
+        transactionDescription:string
+     };
     setTransactionInfo: React.Dispatch<React.SetStateAction<
     {   payinAddress:string, 
         payoutAddress: string,
         fromCurrency:string,
         toCurrency:string,
         amount:number,
-        directedAmount:number 
+        directedAmount:number,        
+        transactionAction:string,
+        transactionDescription:string 
     }>>;   
     userId: string;
     setUserId: React.Dispatch<React.SetStateAction<string>>;
@@ -37,7 +42,10 @@ export const GlobalProvider: React.FC<GlobalProvideProps> = ({ children }) => {
         fromCurrency:"",
         toCurrency:"",
         amount:0,
-        directedAmount:0 
+        directedAmount:0,
+        transactionAction:"",
+        transactionDescription:""
+ 
     });
 
     const [userId, setUserId] = useState<string>("3434375");

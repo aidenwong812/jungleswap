@@ -34,7 +34,8 @@ export async function getPrice(
             tradeType: "EXACT_INPUT",
         });
         const priceAmount = price.details?.currencyOut?.amountFormatted;
-        return priceAmount;
+        const userBalance = price.details?.userBalance;
+        return {priceAmount, userBalance};
     }
     catch (error) {
         return error;
@@ -51,4 +52,40 @@ export async function getQuote(chainId: number, toChainId: number, currency: str
         tradeType: "EXACT_INPUT",
     });
     return quote;
+}
+
+export async function Getconfig() {
+    const options = { method: 'GET' };
+
+    fetch('https://api.relay.link/config/v2', options)
+        .then(response => response.json())
+        .then(response => console.log(response))
+        .catch(err => console.error(err));
+}
+
+export async function GetExecutionStatus() {
+    const options = { method: 'GET' };
+
+    fetch('https://api.relay.link/intents/status/v2', options)
+        .then(response => response.json())
+        .then(response => console.log(response))
+        .catch(err => console.error(err));
+}
+
+export async function GetRequests() {
+    const options = { method: 'GET' };
+
+    fetch('https://api.relay.link/requests/v2', options)
+        .then(response => response.json())
+        .then(response => console.log(response))
+        .catch(err => console.error(err));
+}
+
+export async function GetTokenPrice() {
+    const options = { method: 'GET' };
+
+    fetch('https://api.relay.link/currencies/token/price', options)
+        .then(response => response.json())
+        .then(response => console.log(response))
+        .catch(err => console.error(err));
 }
