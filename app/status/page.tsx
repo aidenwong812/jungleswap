@@ -24,8 +24,8 @@ const Status = () => {
         handleStatus();
     }, [])
     return (
-        <div className="flex flex-col justify-center gap-4 px-4">
-            <p className="text-3xl font-bold text-center py-4 text-[#ffffff]">{transactionStatus.toUpperCase()}</p>
+        <div className="flex flex-col justify-center gap-4 px-4  -mt-28">
+            <p className="text-2xl font-bold text-center py-4 text-[#ffffff]">{transactionStatus.toUpperCase()}</p>
             <div className="py-4">
                 <button className="py-1 px-2 rounded-md hover:bg-[#35177a] touch-pan-left bg-[#504f4f] text-white text-sm float-end w-20 outline-none opacity-80"
                     onClick={handleStatus}
@@ -37,7 +37,7 @@ const Status = () => {
                     </div>
                 </button>
             </div>
-            <div className="flex flex-col gap-3 text-white text-md px-6 -mt-28">
+            <div className="flex flex-col gap-3 text-white text-md px-6">
                 <p className="text-xl font-bold text-center py-4 text-[#ffffff]">{transactionInfo.transactionAction}</p>
                 <p className="text-xl text-center py-4 text-[#ffffff]">{transactionInfo.transactionDescription}</p>
                 <div className="flex gap-4">Amount
