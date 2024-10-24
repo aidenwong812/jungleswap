@@ -175,7 +175,7 @@ export default function Home() {
             <button
               className="w-full rounded-full border-[1px] border-[#dde2ea] py-2 bg-radial-gradient from-transparent to-[#47434d] hover:-translate-y-1 duration-300
                           disabled:bg-[#413f44] disabled:text-[#5a5858]"
-              onClick={handleTransaction} disabled={userBalance>inputAmount}
+              onClick={handleTransaction} disabled={userBalance<inputAmount}
             >
               Confirm
             </button>
