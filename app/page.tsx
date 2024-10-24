@@ -29,7 +29,6 @@ export default function Home() {
 
   useEffect(() => {
     fetchAmount();
-    console.log(fromAddress)
   }, [inputAmount, fromAddress, toAddress]);
 
   useEffect(() => {
@@ -57,7 +56,6 @@ export default function Home() {
     const outChainId = GetchainId(outCurrency);
     const inputChainId = GetchainId(inputCurrency);
     const solverCapacity = await getSolverCapacity(String(inputChainId), String(outChainId));
-    console.log(solverCapacity);
     if (solverCapacity.solver?.balance) {
       setInputminimumAmount(Number(solverCapacity.solver?.balance) / 1e22);
     }
@@ -89,7 +87,6 @@ export default function Home() {
       const outCurrencyId = GetCurrencyaddress(outCurrency);
       const inputCurrencyId = GetCurrencyaddress(inputCurrency);
       const quote: any = await getQuote(inputChainId, outChainId, inputCurrencyId, outCurrencyId, String(inputAmount * 1e18), toAddress);
-      console.log(quote);
       if (quote.steps[0].requestId) {
         setTransactionInfo({
           payinAddress: toAddress,
@@ -150,9 +147,9 @@ export default function Home() {
             </div>
 
             <button
-              className="w-full rounded-full border-[1px] border-[#dde2ea] py-2 bg-radial-gradient from-transparent to-[#47434d] hover:-translate-y-1 duration-300
+              className="w-full rounded-full border-[1px] border-[#dde2ea] py-2 bg-radial-gradient from-transparent to-[#47434d]  hover:-translate-y-1 duration-300
                           disabled:bg-[#413f44] disabled:text-[#5a5858]"
-              onClick={handleTransaction} disabled={userBalance > inputAmount}
+              onClick={handleTransaction} disabled={userBalance < inputAmount}
             >
               Confirm
             </button>

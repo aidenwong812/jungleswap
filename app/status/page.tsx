@@ -12,22 +12,24 @@ const Status = () => {
     const [transactionStatus, setTransactionStatus] = useState("");
     const handleStatus = () => {
         setIsloading(true);
-        axios.post("/api/transactions/status", {transactionId })
+        axios.post("/api/transactions/status", { transactionId })
             .then((res) => {
-                 console.log(res.data.data);
-                 setTransactionStatus(res.data.data);
-                 setIsloading(false);
+                setIsloading(false);
+                setTransactionStatus(res.data.data);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                setIsloading(false);
+                console.log(err);
+            });
     }
     useEffect(() => {
         handleStatus();
     }, [])
     return (
         <div className="flex flex-col justify-center gap-4 px-4  -mt-28">
-            <p className="text-2xl font-bold text-center py-4 text-[#ffffff]">{transactionStatus.toUpperCase()}</p>
-            <div className="py-4">
-                <button className="py-1 px-2 rounded-md hover:bg-[#35177a] touch-pan-left bg-[#504f4f] text-white text-sm float-end w-20 outline-none opacity-80"
+            <p className="text-2xl font-bold text-center text-[#ffffff]">{transactionStatus && transactionStatus !== '' ? transactionStatus : transactionInfo.transactionStatus.toUpperCase()}</p>
+            <div>
+                <button className="py-1 px-2 rounded-md hover:bg-[#2b2b2c] touch-pan-left bg-[#504f4f] text-white text-sm float-end w-20 outline-none opacity-80"
                     onClick={handleStatus}
                     disabled={isLoading}
                 >

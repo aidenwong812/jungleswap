@@ -35,7 +35,7 @@ export async function getPrice(
         });
         const priceAmount = price.details?.currencyOut?.amountFormatted;
         const userBalance = price.details?.userBalance;
-        return {priceAmount, userBalance};
+        return { priceAmount, userBalance };
     }
     catch (error) {
         return error;
@@ -75,10 +75,10 @@ export async function GetExecutionStatus() {
 export async function GetRequests() {
     const options = { method: 'GET' };
 
-    fetch('https://api.relay.link/requests/v2', options)
+    const request = fetch('https://api.relay.link/requests/v2', options)
         .then(response => response.json())
-        .then(response => console.log(response))
         .catch(err => console.error(err));
+    return request;
 }
 
 export async function GetTokenPrice() {
