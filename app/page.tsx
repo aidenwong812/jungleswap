@@ -2,23 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { useRouter, useSearchParams } from "next/navigation";
-import axios from "axios";
+import { useRouter } from "next/navigation";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import InputCurrency from "./component/Input";
 import { useGlobalContext } from "../context/GlobalContext";
 import Footer from "./component/Footer";
-import { getSolverCapacity, getPrice, getQuote, Getconfig, GetExecutionStatus, GetRequests, GetTokenPrice } from "./services/relay";
+import { getSolverCapacity, getPrice, getQuote } from "./services/relay";
 import Walletbutton from "./component/Wallets";
 import { config } from './wagmi';
 const queryClient = new QueryClient();
 
 export default function Home() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const { setTransactionInfo, setUserId, userId, isLoading, setIsLoading } = useGlobalContext();
+  const { setTransactionInfo, setIsLoading } = useGlobalContext();
   const [inputAmount, setInputAmount] = useState<any>();
   const [outAmount, setOutAmount] = useState<any>();
   const [fromAddress, setFromAddress] = useState<any>();
@@ -29,22 +27,6 @@ export default function Home() {
   const [userBalance, setUserBalance] = useState<number>(0);
   const [inputMinimumAmount, setInputminimumAmount] = useState<number>(2.5);
 
-  const [id, setId] = useState<any>();
-
-
-  useEffect(() => {
-    if (searchParams.get('id') !== undefined) setId(searchParams.get('id'));
-  }, [])
-
-  useEffect(() => {
-    if (id) {
-      setUserId(id);
-      axios.post('/api/user', { userId })
-        .then((res: any) => { console.log(res); })
-        .catch((err: any) => { console.log(err) })
-    }
-  }, [id])
-  // Effect hooks to trigger fetch based on amount or currency change
   useEffect(() => {
     fetchAmount();
     console.log(fromAddress)
@@ -117,15 +99,11 @@ export default function Home() {
           amount: outAmount,
           directedAmount: inputAmount,
           transactionAction: quote.steps[0].action,
-          transactionDescription: quote.steps[0].description
-        });
-        axios.post('api/transactions/confirm', {
-          userId: userId,
+          transactionDescription: quote.steps[0].description,
           transactionId: quote.steps[0].requestId,
-          chainId: quote.steps[0].items[0].data.chainId,
-          status: quote.steps[0].items[0].status
-        })
-        router.push('/confirm');
+          transactionStatus: quote.steps[0].items[0].status
+        });
+        router.push('/status');
       }
       else toast.error('Failed to create transaction.')
 
@@ -151,8 +129,7 @@ export default function Home() {
                 inputError={inputError}
               />
             </div>
-            <Walletbutton style={'From Wallet'} setAddress={setFromAddress} />
-
+            <Walletbutton style={'Connect Deposit Wallet'} setAddress={setFromAddress} />
             <div className="w-full">
               <InputCurrency
                 style="Get"
@@ -175,7 +152,7 @@ export default function Home() {
             <button
               className="w-full rounded-full border-[1px] border-[#dde2ea] py-2 bg-radial-gradient from-transparent to-[#47434d] hover:-translate-y-1 duration-300
                           disabled:bg-[#413f44] disabled:text-[#5a5858]"
-              onClick={handleTransaction} disabled={userBalance<inputAmount}
+              onClick={handleTransaction} disabled={userBalance > inputAmount}
             >
               Confirm
             </button>
