@@ -17,8 +17,6 @@ const Modal = ({ setTokenStyle, style, setIsModalShow, setTokenImage }: { setTok
             </div>
             <div className="hover:overflow-auto overflow-hidden w-full">
                 {tokens.map((token) => {
-                    if(style === 'Send' && token.title === "SOL") return null;
-                    if(style === 'Get' && token.title === "APE") return null; 
                    
                     return (
                         <button key={token.title} onClick={() => {
