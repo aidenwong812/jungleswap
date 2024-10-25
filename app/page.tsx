@@ -126,7 +126,14 @@ export default function Home() {
                 inputError={inputError}
               />
             </div>
-            <Walletbutton style={'Connect Deposit Wallet'} setAddress={setFromAddress} />
+            <div className="flex flex-col w-full gap-1">
+              <article>Connect Deposit Wallet</article>
+              <input
+                className="w-full rounded-md outline-none bg-transparent border-[1px] border-[#dde2ea] p-2"
+                placeholder={`Enter the ${outCurrency} payout address`}
+                onChange={(e) => setToAddress(e.target.value)}
+              />
+            </div>
             <div className="w-full">
               <InputCurrency
                 style="Get"
