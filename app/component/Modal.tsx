@@ -1,7 +1,7 @@
 
 
-const Modal = ({ setTokenStyle, style, setIsModalShow, setTokenImage }: { setTokenStyle: any, style: string, setIsModalShow: any, setTokenImage: any }) => {
-    const tokens = [        
+const Modal = ({ setTokenStyle, style, setIsModalShow, setTokenImage, setTokenChain }: { setTokenStyle: any, style: string, setIsModalShow: any, setTokenImage: any, setTokenChain: any }) => {
+    const tokens = [
         { title: "SOL", name: "Solana", image: "https://content-api.changenow.io/uploads/sol_3b3f795997.svg" },
         { title: "APE", name: "ape", image: "https://content-api.changenow.io/uploads/ape_fd3441632d.svg" },
 
@@ -17,12 +17,12 @@ const Modal = ({ setTokenStyle, style, setIsModalShow, setTokenImage }: { setTok
             </div>
             <div className="hover:overflow-auto overflow-hidden w-full">
                 {tokens.map((token) => {
-                   
                     return (
                         <button key={token.title} onClick={() => {
                             setTokenStyle(token.title);
                             setIsModalShow(false);
                             setTokenImage(token.image);
+                            setTokenChain(token.name);
                         }} className="flex border-t-[1px] border-[#808086] py-2 px-4 items-center gap-4 w-full">
                             <img src={token.image} alt="image" className="size-10" />
                             <div className="flex flex-col text-left">

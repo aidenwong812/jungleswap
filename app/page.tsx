@@ -10,7 +10,6 @@ import InputCurrency from "./component/Input";
 import { useGlobalContext } from "../context/GlobalContext";
 import Footer from "./component/Footer";
 import { getSolverCapacity, getPrice, getQuote } from "./services/relay";
-import Walletbutton from "./component/Wallets";
 import { config } from './wagmi';
 const queryClient = new QueryClient();
 
@@ -26,6 +25,8 @@ export default function Home() {
   const [inputError, setInputError] = useState<string>("");
   const [userBalance, setUserBalance] = useState<number>(0);
   const [inputMinimumAmount, setInputminimumAmount] = useState<number>(2.5);
+  const [inputTokenChain, setInputTokenChain] = useState<string>('ape');
+  const [outTokenChain, setOutTokenChain] = useState<string>('Solana');
 
   useEffect(() => {
     fetchAmount();
@@ -55,9 +56,15 @@ export default function Home() {
   const fetchCurrency = async () => {
     const outChainId = GetchainId(outCurrency);
     const inputChainId = GetchainId(inputCurrency);
-    const solverCapacity = await getSolverCapacity(String(inputChainId), String(outChainId));
-    if (solverCapacity.solver?.balance) {
-      setInputminimumAmount(Number(solverCapacity.solver?.balance) / 1e22);
+    if (outChainId === inputChainId) {
+      toast.warn("Sender and recipient cannot be the same for 'send' transactions");
+      setInputError("");
+    }
+    else {
+      const solverCapacity = await getSolverCapacity(String(inputChainId), String(outChainId));
+      if (solverCapacity.solver?.balance) {
+        setInputminimumAmount(Number(solverCapacity.solver?.balance));
+      }
     }
   }
 
@@ -66,18 +73,20 @@ export default function Home() {
     const inputChainId = GetchainId(inputCurrency);
     const outCurrencyId = GetCurrencyaddress(outCurrency);
     const inputCurrencyId = GetCurrencyaddress(inputCurrency);
-    if (inputAmount && inputAmount > inputMinimumAmount) {
-      setInputError("");
-      if (fromAddress && toAddress) {
-        setIsLoading(false)
-        const tempOutAmount: any = await getPrice(inputChainId, outChainId, inputCurrencyId, outCurrencyId, String(inputAmount * 1e18), fromAddress, toAddress);
-        toast.error(tempOutAmount.message);
-        setOutAmount(tempOutAmount.priceAmount);
-        setUserBalance(tempOutAmount.userBalance);
-      }
-    } else {
-      setInputError(`Send currency amount is very small. Minimum currency amount is ${inputMinimumAmount}.`);
+    // if (inputAmount && inputAmount > inputMinimumAmount) {
+    setInputError("");
+    console.log("aaa");
+    if (fromAddress && toAddress && inputAmount) {
+      const tempInputAmount = inputCurrency === 'SOL' ? inputAmount * 1e9 : inputAmount * 1e18
+      const tempOutAmount: any = await getPrice(inputChainId, outChainId, inputCurrencyId, outCurrencyId, String(tempInputAmount), fromAddress, toAddress);
+      toast.error(tempOutAmount.message);
+      console.log(tempOutAmount)
+      setOutAmount(tempOutAmount.priceAmount);
+      setUserBalance(tempOutAmount.userBalance);
     }
+    // } else {
+    //   // setInputError(`Send currency amount is too small. Minimum currency amount is ${inputMinimumAmount}.`);
+    // }
   };
 
   const handleTransaction = async () => {
@@ -124,14 +133,16 @@ export default function Home() {
                 tokenStyle={inputCurrency}
                 setTokenStyle={setInputCurrency}
                 inputError={inputError}
+                tokenChain={inputTokenChain}
+                setTokenChain={setInputTokenChain}
               />
             </div>
             <div className="flex flex-col w-full gap-1">
-              <article>Connect Deposit Wallet</article>
+              <article>Deposit Wallet</article>
               <input
                 className="w-full rounded-md outline-none bg-transparent border-[1px] border-[#dde2ea] p-2"
-                placeholder={`Enter the ${outCurrency} payout address`}
-                onChange={(e) => setToAddress(e.target.value)}
+                placeholder={`Enter the ${inputCurrency} payin address`}
+                onChange={(e) => setFromAddress(e.target.value)}
               />
             </div>
             <div className="w-full">
@@ -142,6 +153,8 @@ export default function Home() {
                 tokenStyle={outCurrency}
                 setTokenStyle={setOutCurrency}
                 inputError={""}
+                tokenChain={outTokenChain}
+                setTokenChain={setOutTokenChain}
               />
             </div>
             <div className="flex flex-col w-full gap-1">
@@ -152,7 +165,6 @@ export default function Home() {
                 onChange={(e) => setToAddress(e.target.value)}
               />
             </div>
-
             <button
               className="w-full rounded-full border-[1px] border-[#dde2ea] py-2 bg-radial-gradient from-transparent to-[#47434d]  hover:-translate-y-1 duration-300
                           disabled:bg-[#413f44] disabled:text-[#5a5858]"
