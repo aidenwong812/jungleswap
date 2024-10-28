@@ -44,7 +44,7 @@ const Walletbutton = ({ style, setAddress }: { style: string, setAddress: any })
                             {(() => {
                                 if (!connected) {
                                     return (
-                                        <button onClick={openConnectModal} type="button" className="px-2 py-1 bg-radial-gradient from-transparent to-[#51792c] rounded-md opacity-90 hover:bg-[#1a5658] border-[0.5px]">
+                                        <button onClick={openConnectModal} type="button" className="px-2 py-1 bg-radial-gradient from-transparent to-[#413f44] rounded-md opacity-90 border-[0.5px]">
                                             Connect Wallet
                                         </button>
                                     );

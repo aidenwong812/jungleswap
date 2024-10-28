@@ -9,7 +9,7 @@ import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import InputCurrency from "./component/Input";
 import { useGlobalContext } from "../context/GlobalContext";
 import Footer from "./component/Footer";
-import { getPrice, getQuote } from "./services/relay";
+import { getPrice, GetQuote } from "./services/relay";
 import { config } from './wagmi';
 import Walletbutton from "./component/Wallets";
 const queryClient = new QueryClient();
@@ -26,6 +26,7 @@ export default function Home() {
   const [inputError, setInputError] = useState<string>("");
   const [inputTokenChain, setInputTokenChain] = useState<string>('ape');
   const [outTokenChain, setOutTokenChain] = useState<string>('Solana');
+
 
   useEffect(() => {
     fetchAmount();
@@ -78,13 +79,23 @@ export default function Home() {
     }
   };
 
+
+
   const handleTransaction = async () => {
     try {
       const outChainId = GetchainId(outCurrency);
       const inputChainId = GetchainId(inputCurrency);
       const outCurrencyId = GetCurrencyaddress(outCurrency);
       const inputCurrencyId = GetCurrencyaddress(inputCurrency);
-      const quote: any = await getQuote(inputChainId, outChainId, inputCurrencyId, outCurrencyId, String(inputAmount * 1e18), toAddress);
+      const quote = await GetQuote(
+        inputChainId,
+        outChainId,
+        inputCurrencyId,
+        outCurrencyId,
+        String(inputAmount * 1e18),
+        toAddress,
+        fromAddress
+      );
       if (quote.steps[0].requestId) {
         setTransactionInfo({
           payinAddress: toAddress,

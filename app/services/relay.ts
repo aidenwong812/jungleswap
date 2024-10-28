@@ -1,7 +1,10 @@
-import { createClient, convertViemChainToRelayChain, MAINNET_RELAY_API, TESTNET_RELAY_API } from '@reservoir0x/relay-sdk'
+import { createClient, convertViemChainToRelayChain, MAINNET_RELAY_API } from '@reservoir0x/relay-sdk'
 import { mainnet } from 'viem/chains'
 import { getClient } from '@reservoir0x/relay-sdk'
 import { Address } from 'viem';
+import { useWalletClient } from 'wagmi';
+
+
 
 createClient({
     baseApiUrl: MAINNET_RELAY_API,
@@ -9,7 +12,30 @@ createClient({
     chains: [convertViemChainToRelayChain(mainnet)]
 });
 
-
+export async function GetQuote(
+    chainId: number,
+    toChainId: number,
+    currency: string,
+    toCurrency: string,
+    amount: string,
+    recipient: Address,
+    deposit: Address
+  ): Promise<any> {
+    const { data: wallet } = useWalletClient({
+      account: deposit
+    });
+    const quote = await getClient()?.actions.getQuote({
+      chainId: chainId,
+      toChainId: toChainId,
+      currency: currency,
+      toCurrency: toCurrency,
+      amount: amount,
+      recipient: recipient,
+      wallet,
+      tradeType: "EXACT_INPUT",
+    });
+    return quote;
+  }
 
 export async function getSolverCapacity(destinationChainId: string, originChainId: string) {
 
@@ -41,18 +67,22 @@ export async function getPrice(
         return error;
     }
 }
-export async function getQuote(chainId: number, toChainId: number, currency: string, toCurrency: string, amount: string, recipient: Address) {
-    const quote = await getClient()?.actions.getQuote({
-        chainId: chainId,
-        toChainId: toChainId,
-        currency: currency,
-        toCurrency: toCurrency,
-        amount: amount,
-        recipient: recipient,
-        tradeType: "EXACT_INPUT",
-    });
-    return quote;
-}
+// export async function getQuote(chainId: number, toChainId: number, currency: string, toCurrency: string, amount: string, recipient: Address, deposit:Address) {
+//     const { data: wallet } = useWalletClient({
+//         account: deposit
+//     });
+//     const quote = await getClient()?.actions.getQuote({
+//         chainId: chainId,
+//         toChainId: toChainId,
+//         currency: currency,
+//         toCurrency: toCurrency,
+//         amount: amount,
+//         recipient: recipient,
+//         wallet,
+//         tradeType: "EXACT_INPUT",
+//     });
+//     return quote;
+// }
 
 export async function Getconfig() {
     const options = { method: 'GET' };
