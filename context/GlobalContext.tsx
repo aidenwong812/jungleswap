@@ -11,8 +11,7 @@ interface GlobalContextType {
         directedAmount:number,
         transactionAction:string,
         transactionDescription:string,
-        transactionId:string,
-        transactionStatus:string
+        transactionId:string
      };
     setTransactionInfo: React.Dispatch<React.SetStateAction<
     {   payinAddress:string, 
@@ -23,11 +22,12 @@ interface GlobalContextType {
         directedAmount:number,        
         transactionAction:string,
         transactionDescription:string,
-        transactionId:string,
-        transactionStatus:string
+        transactionId:string
     }>>;   
     isLoading: boolean;
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    transactionStatus: string;
+    setTransactionStatus: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface GlobalProvideProps {
@@ -47,15 +47,15 @@ export const GlobalProvider: React.FC<GlobalProvideProps> = ({ children }) => {
         directedAmount:0,
         transactionAction:"",
         transactionDescription:"",
-        transactionId:"",
-        transactionStatus:""
- 
+        transactionId:"" 
     });
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    const [transactionStatus, setTransactionStatus] = useState<string>("")
+
     return (
-        <GlobalContext.Provider value={{transactionInfo, setTransactionInfo, isLoading, setIsLoading}}>
+        <GlobalContext.Provider value={{transactionInfo, setTransactionInfo, isLoading, setIsLoading, transactionStatus, setTransactionStatus}}>
             {children}
         </GlobalContext.Provider>
     );
