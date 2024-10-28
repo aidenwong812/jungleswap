@@ -10,9 +10,7 @@ const Walletbutton = ({ style, setAddress }: { style: string, setAddress: any })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [address])
     return (
-
-        <div className="flex w-full gap-1 justify-between items-center">
-            <article>{style}</article>
+        <div>
             <ConnectButton.Custom>
                 {({
                     account,

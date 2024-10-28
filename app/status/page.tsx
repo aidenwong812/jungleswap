@@ -6,10 +6,9 @@ import Footer from "../component/Footer";
 import { useGlobalContext } from "@/context/GlobalContext";
 
 const Status = () => {
-    const { transactionInfo } = useGlobalContext();
+    const { transactionInfo, transactionStatus, setTransactionStatus } = useGlobalContext();
     const [isLoading, setIsloading] = useState(false);
     const transactionId = transactionInfo.transactionId;
-    const [transactionStatus, setTransactionStatus] = useState("");
     const handleStatus = () => {
         setIsloading(true);
         axios.post("/api/transactions/status", { transactionId })

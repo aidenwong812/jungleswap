@@ -9,13 +9,14 @@ import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import InputCurrency from "./component/Input";
 import { useGlobalContext } from "../context/GlobalContext";
 import Footer from "./component/Footer";
-import { getSolverCapacity, getPrice, getQuote} from "./services/relay";
+import { getPrice, getQuote } from "./services/relay";
 import { config } from './wagmi';
+import Walletbutton from "./component/Wallets";
 const queryClient = new QueryClient();
 
 export default function Home() {
   const router = useRouter();
-  const { setTransactionInfo, setIsLoading } = useGlobalContext();
+  const { setTransactionInfo, setIsLoading, isLoading } = useGlobalContext();
   const [inputAmount, setInputAmount] = useState<any>();
   const [outAmount, setOutAmount] = useState<any>();
   const [fromAddress, setFromAddress] = useState<any>();
@@ -23,8 +24,6 @@ export default function Home() {
   const [inputCurrency, setInputCurrency] = useState<string>("APE");
   const [outCurrency, setOutCurrency] = useState<string>("SOL");
   const [inputError, setInputError] = useState<string>("");
-  const [userBalance, setUserBalance] = useState<number>(0);
-  const [inputMinimumAmount, setInputminimumAmount] = useState<number>(2.5);
   const [inputTokenChain, setInputTokenChain] = useState<string>('ape');
   const [outTokenChain, setOutTokenChain] = useState<string>('Solana');
 
@@ -34,7 +33,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchCurrency();
-    fetchAmount();    
+    fetchAmount();
   }, [inputCurrency, outCurrency]);
 
   const GetchainId = (currency: string) => {
@@ -44,7 +43,7 @@ export default function Home() {
       default: return 792703809;
     }
   };
-  
+
 
   const GetCurrencyaddress = (currency: string) => {
     switch (currency) {
@@ -61,23 +60,19 @@ export default function Home() {
       toast.warn("Sender and recipient cannot be the same for 'send' transactions");
       setInputError("");
     }
-    else {
-      const solverCapacity = await getSolverCapacity(String(inputChainId), String(outChainId));
-      if (solverCapacity.solver?.balance) {
-        setInputminimumAmount(Number(solverCapacity.solver?.balance));
-      }
-    }
   }
 
   const fetchAmount = async () => {
     const outChainId = GetchainId(outCurrency);
     const inputChainId = GetchainId(inputCurrency);
     const outCurrencyId = GetCurrencyaddress(outCurrency);
-    const inputCurrencyId = GetCurrencyaddress(inputCurrency);    
+    const inputCurrencyId = GetCurrencyaddress(inputCurrency);
     setInputError("");
     if (fromAddress && toAddress && inputAmount) {
-      const tempInputAmount = inputCurrency === 'SOL' ? inputAmount * 1e9 : inputAmount * 1e18
+      const tempInputAmount = inputCurrency === 'SOL' ? inputAmount * 1e9 : inputAmount * 1e18;
+      setIsLoading(true);
       const tempOutAmount: any = await getPrice(inputChainId, outChainId, inputCurrencyId, outCurrencyId, String(tempInputAmount), fromAddress, toAddress);
+      setIsLoading(false);
       toast.error(tempOutAmount.message);
       setOutAmount(tempOutAmount.priceAmount);
     }
@@ -100,8 +95,7 @@ export default function Home() {
           directedAmount: inputAmount,
           transactionAction: quote.steps[0].action,
           transactionDescription: quote.steps[0].description,
-          transactionId: quote.steps[0].requestId,
-          transactionStatus: quote.steps[0].items[0].status
+          transactionId: quote.steps[0].requestId
         });
         router.push('/status');
       }
@@ -132,12 +126,10 @@ export default function Home() {
               />
             </div>
             <div className="flex flex-col w-full gap-1">
-              <article>Deposit Wallet</article>
-              <input
-                className="w-full rounded-md outline-none bg-transparent border-[1px] border-[#dde2ea] p-2"
-                placeholder={`Enter the ${inputCurrency} payin address`}
-                onChange={(e) => setFromAddress(e.target.value)}
-              />
+              <div className="flex justify-between items-center">
+                <article>Deposit Wallet</article>
+                <Walletbutton style="Get" setAddress={setFromAddress} />
+              </div>
             </div>
             <div className="w-full">
               <InputCurrency
@@ -162,7 +154,7 @@ export default function Home() {
             <button
               className="w-full rounded-full border-[1px] border-[#dde2ea] py-2 bg-radial-gradient from-transparent to-[#47434d]  hover:-translate-y-1 duration-300
                           disabled:bg-[#413f44] disabled:text-[#5a5858]"
-              onClick={handleTransaction} //disabled={userBalance < inputAmount}
+              onClick={handleTransaction} disabled={isLoading}
             >
               Confirm
             </button>
