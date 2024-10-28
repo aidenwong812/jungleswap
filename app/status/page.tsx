@@ -27,7 +27,7 @@ const Status = () => {
     }, [])
     return (
         <div className="flex flex-col justify-center gap-4 px-4  -mt-28">
-            <p className="text-2xl font-bold text-center text-[#ffffff]">{transactionStatus && transactionStatus !== '' ? transactionStatus : transactionInfo.transactionStatus.toUpperCase()}</p>
+            <p className="text-2xl font-bold text-center text-[#ffffff]">{transactionStatus.toUpperCase()}</p>
             <div>
                 <button className="py-1 px-2 rounded-md hover:bg-[#2b2b2c] touch-pan-left bg-[#504f4f] text-white text-sm float-end w-20 outline-none opacity-80"
                     onClick={handleStatus}
@@ -46,8 +46,8 @@ const Status = () => {
                     <p className="font-bold text-[18px]">{transactionInfo.directedAmount} {transactionInfo.fromCurrency.toUpperCase()}</p>
                 </div>
                 <div>
-                    <p>To this address : </p>
-                    <p className="text-green-500 font-bold text-[18px] break-all pl-4">  {transactionInfo.payinAddress}
+                    <p>Deposit Wallet: </p>
+                    <p className="text-green-500 font-bold text-[18px] break-all pl-4">  {transactionInfo.payoutAddress}
                     </p>
                 </div>
                 <div className="flex gap-4">You Get
@@ -55,7 +55,7 @@ const Status = () => {
                 </div>
                 <div>
                     <p>Recipitent Wallet:</p>
-                    <p className="break-all text-green-500 font-bold text-[18px] pl-4"> {transactionInfo.payoutAddress}
+                    <p className="break-all text-green-500 font-bold text-[18px] pl-4"> {transactionInfo.payinAddress}
                     </p>
                 </div>
             </div>

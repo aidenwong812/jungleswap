@@ -1,31 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GetRequests } from "@/app/services/relay";
 
 export async function POST(req: NextRequest) {
   try {
     const { transactionId } = await req.json();
 
-    let transactionStatus = '';
-
-    const requests: any = await GetRequests();
-
-    for (const request of requests.requests) {
-      if (request.id === transactionId) {
-        transactionStatus = request.status;
-        break;
-
+    const status = await fetch(`https://api.relay.link/intents/status/v2?requestId=${transactionId}`, {method: 'GET'})
+    .then(response => response.json())
+    .then(response => {
+      return response.status;
+      
+    })
+    .catch(err => console.error(err)); 
+    return NextResponse.json(
+      {
+        message: "Transaction confirmed",
+        data: status,
+      },
+      {
+        status: 200
       }
-      console.log(transactionStatus);
-      return NextResponse.json(
-        {
-          message: "Transaction confirmed",
-          data: transactionStatus
-        },
-        {
-          status: 200
-        }
-      );
-    }
+    );
   } catch (error) {
     console.error("Error fetching transactions:", error);
     return NextResponse.json(
