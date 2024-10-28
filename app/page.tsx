@@ -9,7 +9,7 @@ import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import InputCurrency from "./component/Input";
 import { useGlobalContext } from "../context/GlobalContext";
 import Footer from "./component/Footer";
-import { getSolverCapacity, getPrice, getQuote } from "./services/relay";
+import { getSolverCapacity, getPrice, getQuote} from "./services/relay";
 import { config } from './wagmi';
 const queryClient = new QueryClient();
 
@@ -34,7 +34,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchCurrency();
-    fetchAmount();
+    fetchAmount();    
   }, [inputCurrency, outCurrency]);
 
   const GetchainId = (currency: string) => {
@@ -44,6 +44,7 @@ export default function Home() {
       default: return 792703809;
     }
   };
+  
 
   const GetCurrencyaddress = (currency: string) => {
     switch (currency) {
@@ -72,21 +73,14 @@ export default function Home() {
     const outChainId = GetchainId(outCurrency);
     const inputChainId = GetchainId(inputCurrency);
     const outCurrencyId = GetCurrencyaddress(outCurrency);
-    const inputCurrencyId = GetCurrencyaddress(inputCurrency);
-    // if (inputAmount && inputAmount > inputMinimumAmount) {
+    const inputCurrencyId = GetCurrencyaddress(inputCurrency);    
     setInputError("");
-    console.log("aaa");
     if (fromAddress && toAddress && inputAmount) {
       const tempInputAmount = inputCurrency === 'SOL' ? inputAmount * 1e9 : inputAmount * 1e18
       const tempOutAmount: any = await getPrice(inputChainId, outChainId, inputCurrencyId, outCurrencyId, String(tempInputAmount), fromAddress, toAddress);
       toast.error(tempOutAmount.message);
-      console.log(tempOutAmount)
       setOutAmount(tempOutAmount.priceAmount);
-      setUserBalance(tempOutAmount.userBalance);
     }
-    // } else {
-    //   // setInputError(`Send currency amount is too small. Minimum currency amount is ${inputMinimumAmount}.`);
-    // }
   };
 
   const handleTransaction = async () => {
@@ -168,7 +162,7 @@ export default function Home() {
             <button
               className="w-full rounded-full border-[1px] border-[#dde2ea] py-2 bg-radial-gradient from-transparent to-[#47434d]  hover:-translate-y-1 duration-300
                           disabled:bg-[#413f44] disabled:text-[#5a5858]"
-              onClick={handleTransaction} disabled={userBalance < inputAmount}
+              onClick={handleTransaction} //disabled={userBalance < inputAmount}
             >
               Confirm
             </button>
