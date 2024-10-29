@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import { Suspense } from "react";
 
 import { GlobalProvider } from "../context/GlobalContext";
+import Provider from "./provider";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -22,9 +23,11 @@ export default function RootLayout({
         <Suspense>
           <GlobalProvider>
             <ToastContainer />
-            <div className=" bg-[#0c0c0c] w-full flex flex-col justify-center min-h-[600px] h-screen items-center relative overflow-auto bg-[url('/background.webp')] bg-cover bg-repeat">
-              <div className={inter.className}>{children}</div>
-            </div>
+            <Provider>
+              <div className=" bg-[#0c0c0c] w-full flex flex-col justify-center min-h-[600px] h-screen items-center relative overflow-auto bg-[url('/background.webp')] bg-cover bg-repeat">
+                <div className={inter.className}>{children}</div>
+              </div>
+            </Provider>
           </GlobalProvider>
         </Suspense>
       </body>
